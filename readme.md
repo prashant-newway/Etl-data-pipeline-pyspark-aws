@@ -113,6 +113,8 @@ important
 
 1.setting up git and github , venv
 2.pip install requirements .txt for installing dependencies . 
+aws IAM user access for s3
+create IAM user - s3 full access user group -> access key for the user via Local code 
 3.encryption decryption 
 4.access key either stored in config.py as encrypted like here or in vault 
 5. password set at os level via environment variable

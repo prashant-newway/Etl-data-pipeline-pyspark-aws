@@ -4,9 +4,9 @@ key = "key_project"
 iv = "iivvv_encryption"
 salt = "salt_AesEncryption"
 
-#AWS Access And Secret key
-aws_access_key = "d+Qz/Oq9FFnbQpZUzsBPgxWsoDqyXvUw4+ABV8X9dE0=" #AKIA4MTWNKJPVUKUT2VD
-aws_secret_key = "Co1venlNWAdSsQ4npVm2BE8oVDQh0EGQ/o9ty7nMRf6emizkryDi/XJWnhoZVct+" #IwhPoRQ2JZUG6mVMV+HcHxFIzunxofds3NKnLMRv
+#AWS keys
+aws_access_key = "d+Qz/Oq9FFnbQpZUzsBPgxWsoDqyXvUw4+ABV8X9dE0=" 
+aws_secret_key = "Co1venlNWAdSsQ4npVm2BE8oVDQh0EGQ/o9ty7nMRf6emizkryDi/XJWnhoZVct+" 
 
 
 bucket_name = "aws-project-testing"
