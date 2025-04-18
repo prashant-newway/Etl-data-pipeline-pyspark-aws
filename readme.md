@@ -111,5 +111,11 @@ important
 - con - how and why do we need to download data on local 
 *********************
 
-1.setting up git and github
+1.setting up git and github , venv
 2.pip install requirements .txt for installing dependencies . 
+3.encryption decryption 
+4.access key either stored in config.py as encrypted like here or in vault 
+5. password set at os level via environment variable
+6. two project directory required - local and aws
+7. random csv data generated of sales.
+
