@@ -118,4 +118,6 @@ important
 5. password set at os level via environment variable
 6. two project directory required - local and aws
 7. random csv data generated of sales.
+8. connect to boto3 client for s3 connection
+transformations . main.py which takes  utility s3 , logging 
 

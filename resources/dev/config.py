@@ -1,12 +1,13 @@
 import os
 
 key = "key_project"
-iv = "iv_encyptyo"
+iv = "iivvv_encryption"
 salt = "salt_AesEncryption"
 
 #AWS Access And Secret key
-aws_access_key = "access_key"
-aws_secret_key = "secret_key"
+aws_access_key = "d+Qz/Oq9FFnbQpZUzsBPgxWsoDqyXvUw4+ABV8X9dE0=" #AKIA4MTWNKJPVUKUT2VD
+aws_secret_key = "Co1venlNWAdSsQ4npVm2BE8oVDQh0EGQ/o9ty7nMRf6emizkryDi/XJWnhoZVct+" #IwhPoRQ2JZUG6mVMV+HcHxFIzunxofds3NKnLMRv
+
 
 bucket_name = "aws-project-testing"
 s3_customer_datamart_directory = "customer_data_mart"

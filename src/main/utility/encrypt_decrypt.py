@@ -4,6 +4,7 @@ import base64
 from Cryptodome.Cipher import AES                                   # encryption
 from Cryptodome.Protocol.KDF import PBKDF2                          # For hashing and which mode
 import os, sys
+sys.path.append(os.path.abspath("/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws"))
 from resources.dev import config
 # from logging_config import logger
 
@@ -40,3 +41,5 @@ def encrypt(raw):
 def decrypt(enc):
     cipher = AES.new(get_private_key(), AES.MODE_CBC, iv.encode('utf-8'))
     return unpad(cipher.decrypt(base64.b64decode(enc))).decode('utf8')
+
+
