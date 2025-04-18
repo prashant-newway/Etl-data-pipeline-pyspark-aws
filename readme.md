@@ -111,38 +111,5 @@ important
 - con - how and why do we need to download data on local 
 *********************
 
-apache-spark--3.5.5
-
-this error when
-"The operation couldn’t be completed. Unable to locate a Java Runtime.
-Please visit http://www.java.com for information on installing Java."
-for source .zprofile
-the file has export JAVA_HOME=$(/usr/libexec/java_home -v 11) .
-I changed it after installing brew install openjdk@11 and uninstalled oracle java 24.0.1 
-
-
-export JAVA_HOME=$(/usr/libexec/java_home -v 11)
-export PATH=$JAVA_HOME/bin:$PATH
-export PATH="$(brew --prefix)/opt/openjdk@11/bin:$PATH"
-
-eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH="${PATH}:/usr/local/mysql-9.3.0-macos15-arm64/bin/"
-export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
-export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
-export HADOOP_HOME=/opt/homebrew/Cellar/hadoop/3.4.1
-export PATH=$PATH:$HADOOP_HOME/bin
-
-
-
-export HADOOP_HOME=/opt/homebrew/Cellar/hadoop/3.4.1
-export PATH=$PATH:$HADOOP_HOME/bin
-export HADOOP_COMMON_HOME=$HADOOP_HOME
-export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
-
-
-export SPARK_HOME=`brew info apache-spark | grep /usr | tail -n 1 | cut -f 1 -d " "`/libexec
-export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
-
-
-export HADOOP_HOME=`brew info hadoop | grep /usr | head -n 1 | cut -f 1 -d " "`/libexec
-export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
+1.setting up git and github
+2.pip install requirements .txt for installing dependencies . 
