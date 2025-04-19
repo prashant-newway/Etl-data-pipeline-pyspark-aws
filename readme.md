@@ -161,3 +161,21 @@ cost huge for large files
 33. logger response is in json . could be better formated .
 34. reading from s3
 35. agree upon on csv file so no unwanted files or we can trim later
+
+downloading from s3
+
+Get a list of all files in the local directory
+Filter only csv files and creating absolute paths.
+
+------------spark will be required for huge loads of data. here it is very tiny
+
+
+---- so much processing before reaching spark transformation
+
+
+schema validation
+--------con---could be done - handling additional columns , maybe join together in one extra column
+setting null for missing values or columns , depends on the use case.
+
+------con---- could be done for extra or less column files -> currently in error
+may be processed later on.

@@ -12,7 +12,9 @@ aws_secret_key = "Co1venlNWAdSsQ4npVm2BE8oVDQh0EGQ/o9ty7nMRf6emizkryDi/XJWnhoZVc
 bucket_name = "aws-pyspark-pr-1"
 s3_customer_datamart_directory = "customer_data_mart"
 s3_transactions_datamart_directory = "transaction_data_mart"
+
 s3_source_directory = "transaction_data/"
+
 s3_error_directory = "transaction_data_error/"
 s3_processed_directory = "transaction_data_processed/"
 s3_partitioned_directory = "transaction_partitioned_data_mart/"
@@ -40,7 +42,7 @@ customer_data_mart_table = "customers_data_mart"
 transactions_team_data_mart_table = "transactions_team_data_mart"
 
 # Required columns
-mandatory_columns = ["customer_id","store_id","product_name","transactions_date","transactions_person_id","price","quantity","total_cost"]
+mandatory_columns = ["customer_id","store_id","item_name","transactions_date","transactions_person_id","price","quantity","total_cost"]
 
 
 # File Download location
