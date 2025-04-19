@@ -19,7 +19,7 @@ s3_processed_directory = "sales_data_processed/"
 
 #Database credential
 # MySQL database connection properties
-database_name = "aws_project"
+database_name = "mysql_aws_pyspark_db"
 url = f"jdbc:mysql://localhost:3306/{database_name}"
 properties = { 
     "user": "root",
@@ -29,8 +29,8 @@ properties = {
 
 # Table name
 customer_table_name = "customer"
-product_staging_table = "product_staging_table"
-product_table = "product"
+item_staging_table = "item_staging_table"
+item_table = "item"
 sales_team_table = "sales_team"
 store_table = "store"
 
@@ -43,7 +43,7 @@ mandatory_columns = ["customer_id","store_id","product_name","sales_date","sales
 
 
 # File Download location
-local_directory = "/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws/local_project_directory_download_location/file_from_s3/"
+file_from_s3_local_directory = "/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws/local_project_directory_download_location/file_from_s3/"
 customer_data_mart_local_file = "/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws/local_project_directory_download_location/customer_data_mart/"
 sales_team_data_mart_local_file = "/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws/local_project_directory_download_location/sales_team_data_mart/"
 sales_team_data_mart_partitioned_local_file = "/Users/prashant-newway/Documents/Data Engineering/Projects/Etl-data-pipeline-pyspark-aws/local_project_directory_download_location/sales_partition_data/"

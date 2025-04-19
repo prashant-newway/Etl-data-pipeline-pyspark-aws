@@ -121,5 +121,21 @@ create IAM user - s3 full access user group -> access key for the user via Local
 6. two project directory required - local and aws
 7. random csv data generated of sales.
 8. connect to boto3 client for s3 connection
-transformations . main.py which takes  utility s3 , logging 
-
+9.transformations > main.py which takes  utility , config, s3 , logging 
+10. writing modular code using function and class
+11. connecting mysql DB through python
+12. -------check for failure and previous process status as logs . as these processess are run frequently In production --------------------------- 
+13. -------con : Notification not done here for process status and especially if it fails. will be done later on . sql used
+14. staging table to figure out if last run was successful or failure
+15. logger segregates different logs based if error , debugging , info and also provides time of running 
+vs if we just use print
+16. logging data can be save in a csv . 
+17. encrypted keys is still public on github so a con
+18. s3_client is object 
+19. product staging table if production breaks in between
+20. status inactive means process faied in between . has filename also.
+21 .?????????? manually create mysql databases and write tables ???????????
+    manually "CREATE TABLE product_staging_table" was done . could be dynamic
+    
+22. con -  not done here - providing an error if status inactive table and not process the next file 
+23. con - hardcoded sql database details because of doing it in local
