@@ -136,6 +136,28 @@ vs if we just use print
 20. status inactive means process faied in between . has filename also.
 21 .?????????? manually create mysql databases and write tables ???????????
     manually "CREATE TABLE product_staging_table" was done . could be dynamic
-    
+
 22. con -  not done here - providing an error if status inactive table and not process the next file 
 23. con - hardcoded sql database details because of doing it in local
+
+24. jdbc driver by java used for my sql connection 
+25. mysql cli 
+show databases;
+create database mysql_aws_pyspark_db;
+use mysql_aws_pyspark_db;
+create table ....;
+26. till now able to initialize s3 client with decrypting aws keys , mysql connection and querying , able to check local directories for file . 
+27. next step - read all files in s3 and throwing error if not . creating spark session 
+28. ------con : as we are downloading the file on local as we were not able to directly get spark to connect and read from s3
+could be done to improve this.
+ask infra or devops team for how to connect path of spark and s3
+29. so first downloading from s3 , reading it via spark and deleting it later.
+cost huge for large files
+30. check in s3 for it to be csv files
+---- con : could be multiple types of files like parquet which requires more improvement
+31. ----con : bucket name should be dynamically get from table as bucket name will come from different source who has put up the data for us to read.(config.py)
+
+32.  moving csv file which contains randomly generated data to s3 .
+33. logger response is in json . could be better formated .
+34. reading from s3
+35. agree upon on csv file so no unwanted files or we can trim later

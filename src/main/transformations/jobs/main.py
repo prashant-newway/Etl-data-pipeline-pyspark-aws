@@ -7,6 +7,9 @@ from src.main.utility.logging_config import *
 
 from src.main.utility.mysql_session import *
 
+from src.main.read.read_from_s3 import *
+
+
 
 #Get S3 Client
 aws_access_key = config.aws_access_key
@@ -57,3 +60,20 @@ else:
 
 try:
     s3_reader = S3Reader()
+    directory_path = config.s3_source_directory
+    s3_absolute_file_path = s3_reader.list_files(s3_client,config.bucket_name,folder_path = directory_path)   #config.bucket_name could be dynamically generated
+
+    logger.info("Absolute path on s3 bucket for csv file %s ",s3_absolute_file_path)
+    if not s3_absolute_file_path:
+        logger.info(f"No files available at {directory_path}")
+        raise Exception("No Data available to process ")
+    
+except Exception as e:
+    logger.error("Exited with error:- %s",e)
+    raise e
+
+
+
+#2025-04-19 15:57:13,414 - INFO - Absolute path on s3 bucket for csv file ['s3://aws-pyspark-pr-1/transaction_data/sales_data.csv', 's3://aws-pyspark-pr-1/transaction_data/transactions_data.csv']
+
+          
