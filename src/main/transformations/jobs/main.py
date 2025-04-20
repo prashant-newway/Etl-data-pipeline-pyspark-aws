@@ -20,6 +20,9 @@ import datetime
 from src.main.read.database_read import *
 from src.main.transformations.jobs.dimension_tables_join import *
 
+from src.main.write.dataframe_writer import *
+from src.main.upload.upload_to_s3 import *
+
 
 #Get S3 Client
 aws_access_key = config.aws_access_key
@@ -355,6 +358,79 @@ final_customer_data_mart_df.show()
 
 
 parquet_writer = ParquetWriter("overwrite", "parquet")
-parquet_writer.dataframe_writer(final_customer_data_mart_df,config.customer_data_mart_local_)
+parquet_writer.dataframe_writer(final_customer_data_mart_df,config.customer_data_mart_local_file)
+
 
  
+logger.info(f"*******customer data written to local disk at {config.customer_data_mart_local_file} in parquet *******")
+
+
+#Move data on s3 bucket for customer_data_mart from local
+logger.info(f"**** Data Movement from local to s3 for customer data mart *******")
+s3_uploader = UploadToS3 (s3_client)
+s3_directory = config.s3_customer_datamart_directory
+message =s3_uploader.upload_to_s3(s3_directory, config.bucket_name, config.customer_data_mart_local_file)
+logger.info(f" {message}")
+
+
+
+#transactions_team Data Mart
+logger.info("**** write the data into transactions team Data Mart ******* ")
+final_transactions_team_data_mart_df = s3_customer_store_transactions_df_join\
+                        .select("store_id",
+                        "transactions_person_id","transactions_person_first_name","transactions_person_last_name", "store_manager_name", "manager_id","is_manager",
+                        "transactions_person_address", "transactions_person_pincode"
+                        ,"transactions_date", "total_cost"
+                        , expr("SUBSTRING (transactions_date,1,7) as transactions_month"))
+
+logger.info("**** Final Data for transactions team Data Mart*******")
+final_transactions_team_data_mart_df.show()
+parquet_writer.dataframe_writer (final_transactions_team_data_mart_df,config.transactions_team_data_mart_local_file)
+logger.info(f"****transactions team data written to local disk at {config.transactions_team_data_mart_local_file}********")
+
+
+                                                        
+
+#Move data on s3 bucket for transactions_data_mart
+s3_directory = config.s3_transactions_datamart_directory
+message =s3_uploader.upload_to_s3 (s3_directory,
+                            config.bucket_name,
+                            config.transactions_team_data_mart_local_file)
+logger.info(f" {message}")
+
+
+#Also writing the data into partitions
+final_transactions_team_data_mart_df.write.format("parquet")\
+                                .option("header", "true")\
+                                .mode("overwrite")\
+                                .partitionBy("transactions_month", "store_id")\
+                                .option("path", config.transactions_team_data_mart_partitioned_local_file )\
+                                .save()                                                        
+
+
+
+#Move data on s3 for partitioned folder I
+s3_prefix = "transactions_partitioned_data_mart"
+current_epoch = int(datetime.datetime.now().timestamp()) * 1000
+for root, dirs, files in os.walk (config.transactions_team_data_mart_partitioned_local_file):
+    for file in files:
+        print(file)
+        local_file_path = os.path.join(root, file)
+        relative_file_path = os.path.relpath(local_file_path, 
+                                             config.transactions_team_data_mart_partitioned_local_file)
+        s3_key = f"{s3_prefix}/{current_epoch}/{relative_file_path}"
+        s3_client.upload_file(local_file_path, config.bucket_name, s3_key)
+
+
+
+
+# calculation for customer mart
+# find out the customer total purchase every month
+# write the data into MySQL table
+# Logger.info("******Calculating customer every month purchased amount ** customer_mart_calculation_table_write(final_customer_data_mart_df)
+# logger.info("******Calculation of customer mart done and written into the table*********")
+# calculation for sales team mart
+# find out the total sales done by each sales person every month
+# Give the top performer 1% incentive of total sales of the month
+# Rest sales person will get nothing
+# write the data into MySQL table

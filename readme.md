@@ -187,6 +187,26 @@ may be processed later on.
 database reader of spark to connect and read from local mysql database server and to create spark dataframe and joining these different df with data via spark df join
 joining dimension and fact tables here 
 
-writing customer data into customer data mart in parquet format
+
+writing customer data into customer data mart in parquet format with partition
+
 
 first in local -> s3 for other downstream work -> writing downstream analytics data into mysql db server tables 
+
+
+only 1 partition in parquet file format as data is less than 128 mb
+
+writing data in partition which optimizes scanning of it 
+*********** so here creating partition based on transaction month and store id *************
+important
+
+
+---con---could be optimized where line 411 moving and partition in the same spark function by using dynamic spark write format
+
+------huge ---------partitoned data in different sub folder with trans month and store id in s3 and local done
+
+requires spark java connector to use spark in mysql db .
+
+#Analytics and metric data for transaction sales people's financials and customer buying behaviour
+#customer total spend per month -> if downward then ways to attract 
+# top performer based on total transactions per month.
