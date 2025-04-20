@@ -133,7 +133,7 @@ vs if we just use print
 17. encrypted keys is still public on github so a con
 18. s3_client is object 
 19. product staging table if production breaks in between
-20. status inactive means process faied in between . has filename also.
+20. status active means process faied in between and remains here . has filename also.
 21 .?????????? manually create mysql databases and write tables ???????????
     manually "CREATE TABLE product_staging_table" was done . could be dynamic
 
@@ -179,3 +179,14 @@ setting null for missing values or columns , depends on the use case.
 
 ------con---- could be done for extra or less column files -> currently in error
 may be processed later on.
+
+
+----con -- could be optimized --- manually adding table schema and data for it in mysql database server
+
+
+database reader of spark to connect and read from local mysql database server and to create spark dataframe and joining these different df with data via spark df join
+joining dimension and fact tables here 
+
+writing customer data into customer data mart in parquet format
+
+first in local -> s3 for other downstream work -> writing downstream analytics data into mysql db server tables 

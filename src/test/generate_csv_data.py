@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 customer_ids = list(range(1, 21))
 store_ids = list(range(121, 124))
-product_data = {
+item_data = {
     "item1": 212,
     "item2": 50,
     "item3": 20,
@@ -33,13 +33,13 @@ with open(csv_file_path, "w", newline="") as csvfile:
     for _ in range(5000):
         customer_id = random.choice(customer_ids)
         store_id = random.choice(store_ids)
-        product_name = random.choice(list(product_data.keys()))
+        item_name = random.choice(list(item_data.keys()))
         transactions_date = start_date + timedelta(days=random.randint(0, (end_date - start_date).days))
         transactions_person_id = random.choice(transactions_persons[store_id])
         quantity = random.randint(1, 10)
-        price = product_data[product_name]
+        price = item_data[item_name]
         total_cost = price * quantity
 
-        csvwriter.writerow([customer_id, store_id, product_name, transactions_date.strftime("%Y-%m-%d"), transactions_person_id, price, quantity, total_cost])
+        csvwriter.writerow([customer_id, store_id, item_name, transactions_date.strftime("%Y-%m-%d"), transactions_person_id, price, quantity, total_cost])
 
 print("CSV file generated successfully.")

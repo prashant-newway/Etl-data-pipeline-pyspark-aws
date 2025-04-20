@@ -26,7 +26,7 @@ database_name = "mysql_aws_pyspark_db"
 url = f"jdbc:mysql://localhost:3306/{database_name}"
 properties = { 
     "user": "root",
-    "password": "password",
+    "password": "root@2025",
     "driver": "com.mysql.cj.jdbc.Driver"
 }
 

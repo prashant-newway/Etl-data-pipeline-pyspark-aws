@@ -17,6 +17,9 @@ import shutil
 from src.main.move.move_files import *
 import datetime
 
+from src.main.read.database_read import *
+from src.main.transformations.jobs.dimension_tables_join import *
+
 
 #Get S3 Client
 aws_access_key = config.aws_access_key
@@ -67,12 +70,13 @@ else:
 
 try:
     s3_reader = S3Reader()
-    directory_path = config.s3_source_directory
-    s3_absolute_file_path = s3_reader.list_files(s3_client,config.bucket_name,folder_path = directory_path)   #config.bucket_name could be dynamically generated
+    folder_path = config.s3_source_directory
+    s3_absolute_file_path = s3_reader.list_files(s3_client,config.bucket_name,folder_path)  
+     #config.bucket_name could be dynamically generated
 
     logger.info("Absolute path on s3 bucket for csv file %s ",s3_absolute_file_path)
     if not s3_absolute_file_path:
-        logger.info(f"No files available at {directory_path}")
+        logger.info(f"No files available at {folder_path}")
         raise Exception("No Data available to process ")
     
 except Exception as e:
@@ -81,7 +85,7 @@ except Exception as e:
 
 
 
-#2025-04-19 15:57:13,414 - INFO - Absolute path on s3 bucket for csv file ['s3://aws-pyspark-pr-1/transaction_data/sales_data.csv', 's3://aws-pyspark-pr-1/transaction_data/transactions_data.csv']
+#2025-04-19 15:57:13,414 - INFO - Absolute path on s3 bucket for csv file ['s3://aws-pyspark-pr-1/transaction_data/transactions_data.csv', 's3://aws-pyspark-pr-1/transaction_data/transactions_data.csv']
 
           
 bucket_name = config.bucket_name
@@ -199,7 +203,7 @@ else:
 
 #Before running the process
 #stage table needs to be updated with status as Active (A) or inactive (1) 
-logger.info(f"*** Updating the product_staging_table that we have started the process *********")
+logger.info(f"*** Updating the item_staging_table that we have started the process *********")
 insert_statements = []
 db_name =config.database_name
 current_date = datetime.datetime.now()
@@ -207,19 +211,21 @@ formatted_date = current_date.strftime("%Y-%m-%d %H:%M:%S")
 if correct_files:   
     for file in correct_files:
         filename = os.path.basename(file)
-        statements= """INSERT INTO {db_name}.{config.product_staging_table}
-        (file_name, file_location, created_date, status)" 
-        VALUES ('{filename}', '{filename}', '{formatted_date}','A')"""
+        statements= f"""
+        INSERT INTO {db_name}.{config.item_staging_table}
+        (file_name, file_location, created_date, status)
+        VALUES (%s,%s,%s,%s)
+        """
 
         insert_statements.append(statements)
     
-    logger.info("Insert statement created for staging table --- {insert_statements}") 
-    logger.info("*** *****Connecting with My SQL server*")
+    logger.info(f"Insert statement created for staging table --- {insert_statements}") 
+    logger.info("*** *****Connecting with Mysql**************")
     connection = get_mysql_connection()
     cursor = connection.cursor()
-    logger.info("********* My SQL server connected successfully*******")
+    logger.info("********* Mysql  connected successfully*******")
     for statement in insert_statements:
-        cursor.execute(statement)
+        cursor.execute(statement,(filename, filename, formatted_date,'A'))
         connection.commit()
     cursor.close()
     connection.close()
@@ -249,3 +255,106 @@ schema = StructType([
         StructField("additional_column", StringType(), True)
 
         ])
+
+
+
+#connecting with DatabaseReader
+# database_client = DatabaseReader(config.url, config.properties)
+# logger.info("****
+# ***** creating empty dataframe ****
+# *")
+# final_df_to_process = database_client.create_dataframe(spark, "empty_df_create_table")
+
+
+final_df_to_process = spark.createDataFrame([], schema=schema)
+# Create a new column with concatenated values of extra columns
+
+for data in correct_files:
+    data_df = spark.read.format("csv") \
+        .option("header", "true") \
+        .option("inferSchema", "true") \
+        .load(data)
+    data_schema = data_df.columns
+    extra_columns = list(set(data_schema) - set (config.mandatory_columns))
+    logger.info(f"Extra columns present at source is {extra_columns}")
+    if extra_columns:
+        data_df = data_df.withColumn ("additional_column", concat_ws(", ",*extra_columns))\
+            .select("customer_id","store_id","item_name", "Transactions_date","Transactions_person_id",
+            "price", "quantity","total_cost","additional_column") 
+        logger.info(f"processed {data} and added 'additional_column'")
+
+    else:
+        data_df = data_df.withColumn ("additional_column", lit (None))\
+            .select("customer_id", "store_id", "item_name","Transactions_date","Transactions_person_id",
+                "price", "quantity", "total_cost" ,"additional_column")
+      
+    final_df_to_process = final_df_to_process.union(data_df)
+# final_df_to_process = data_df
+logger.info("*********Final Dataframe from source which will be going to processing**** ")
+final_df_to_process.show()
+
+
+#Cleaning and segregating of the data has been done -> Processing and transformation of data will be done in the next part
+#  fetching dimension tables to enrich fact transaction table -> write to local and upload to S3 . will be creating partitions
+
+# Two different data mart will be created - customer , transactions(transactions)
+# datamart are for two different types of specific data category
+#customer buying behaviour with store id segregation using partition . 
+# frequency - monthly
+
+
+#Connecting with DatabaseReader
+database_client = DatabaseReader (config.url, config.properties)
+ #creating df for all tables
+#customer table
+logger.info("**********Loading customer table into customer_table_df*******")
+customer_table_df = database_client.create_dataframe(spark, config.customer_table_name) 
+#item table
+logger.info("*********Loading item table into item_table_df **********")
+item_table_df = database_client.create_dataframe (spark, config.item_table)
+
+
+#item_staging_table 
+logger.info("****** Loading satging table into item_staging_table_df******")
+item_staging_table_df = database_client.create_dataframe (spark, config.item_staging_table)
+
+#transactions_team table
+logger.info("****** Loading transactions team table into transactions_team_table_df")
+transactions_team_table_df = database_client.create_dataframe (spark, config.transactions_team_table)
+
+#store table
+logger.info("****Loading store table into store_table_df *")
+store_table_df = database_client.create_dataframe (spark, config.store_table)
+
+s3_customer_store_transactions_df_join = dimesions_table_join(final_df_to_process,
+                                                        customer_table_df, 
+                                                        store_table_df,
+                                                        transactions_team_table_df)
+
+
+
+#Final enriched data
+logger.info("**********Final Enriched Data *************")
+s3_customer_store_transactions_df_join.show()
+
+
+#writing customer data into customer data mart in parquet format
+# first in local -> s3 for other downstream work -> writing downstream analytics data into mysql db server tables 
+
+
+logger.info("***write the data into Customer Data Mart ******")
+final_customer_data_mart_df = s3_customer_store_transactions_df_join\
+                            .select("ct.customer_id",
+                                    "ct.first_name","ct.last_name","ct.address",
+                                    "ct.pincode", "phone_number",
+                                    "transactions_date", "total_cost")
+logger.info("**** Final Data for customer Data Mart******")
+
+
+final_customer_data_mart_df.show()
+
+
+parquet_writer = ParquetWriter("overwrite", "parquet")
+parquet_writer.dataframe_writer(final_customer_data_mart_df,config.customer_data_mart_local_)
+
+ 
