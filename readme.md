@@ -207,6 +207,20 @@ important
 
 requires spark java connector to use spark in mysql db .
 
-#Analytics and metric data for transaction sales people's financials and customer buying behaviour
-#customer total spend per month -> if downward then ways to attract 
-# top performer based on total transactions per month.
+From line 426
+Analytics and metric data for transaction sales people's financials and customer buying behaviour
+customer total spend per month -> if downward then ways to attract 
+top performer based on total transactions per month.
+
+
+437 main.py -> mart sql transform write -> database write where data type in mysql of table customers data type was wrong so changed datatype in schema from 
+date to varcahr 7 to accomodate only year month 
+
+creating same for transactions data mart 
+
+after all of this -> deleting from local
+
+more try except or error dealing can be done
+
+write requirements of softwares and major dependencies used to do it in local
+

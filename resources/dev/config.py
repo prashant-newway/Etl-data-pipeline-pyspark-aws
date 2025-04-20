@@ -14,7 +14,6 @@ s3_customer_datamart_directory = "customer_data_mart"
 s3_transactions_datamart_directory = "transactions_data_mart"
 
 s3_source_directory = "transactions_data/"
-
 s3_error_directory = "transactions_data_error/"
 s3_processed_directory = "transactions_data_processed/"
 s3_partitioned_directory = "transactions_partitioned_data_mart/"

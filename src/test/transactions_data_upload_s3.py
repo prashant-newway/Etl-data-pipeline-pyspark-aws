@@ -19,6 +19,6 @@ def upload_to_s3(s3_directory, s3_bucket, local_file_path):
     except Exception as e:
         raise e
 
-s3_directory = "transaction_data/"
+s3_directory = "transactions_data/"
 s3_bucket = "aws-pyspark-pr-1"
 upload_to_s3(s3_directory, s3_bucket, local_file_path)

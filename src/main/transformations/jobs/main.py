@@ -23,6 +23,12 @@ from src.main.transformations.jobs.dimension_tables_join import *
 from src.main.write.dataframe_writer import *
 from src.main.upload.upload_to_s3 import *
 
+from src.main.transformations.jobs.customer_mart_sql_tranform_write import *
+from src.main.transformations.jobs.transactions_mart_sql_transform_write import *
+from src.main.delete.local_file_delete import *
+from src.main.delete.aws_delete import *
+from src.main.delete.database_delete import *
+
 
 #Get S3 Client
 aws_access_key = config.aws_access_key
@@ -424,13 +430,72 @@ for root, dirs, files in os.walk (config.transactions_team_data_mart_partitioned
 
 
 
-# calculation for customer mart
-# find out the customer total purchase every month
-# write the data into MySQL table
-# Logger.info("******Calculating customer every month purchased amount ** customer_mart_calculation_table_write(final_customer_data_mart_df)
-# logger.info("******Calculation of customer mart done and written into the table*********")
-# calculation for sales team mart
-# find out the total sales done by each sales person every month
-# Give the top performer 1% incentive of total sales of the month
-# Rest sales person will get nothing
-# write the data into MySQL table
+
+
+#calculation for customer data mart customer buying behaviour every month
+
+#writing the data into MySQL table
+logger.info("******Calculating customer spending every month  **")
+customer_mart_calculation_table_write(final_customer_data_mart_df)
+logger.info("******Calculation of customer mart done and written into the table*********")
+
+
+#calculation for transactions sales team performace
+logger.info("******Calculating transactions team performance every month  *****")
+transactions_mart_calculation_table_write(final_transactions_team_data_mart_df)
+logger.info("******Calculation of transactions team performance mart done and written into the table*********")
+
+
+
+#Moving the file on s3 processed folder (data marts data) and delete the local files
+
+source_prefix = config.s3_source_directory
+destination_prefix = config.s3_processed_directory
+message = move_s3_to_s3 (s3_client, config.bucket_name, source_prefix, destination_prefix) 
+logger.info(f" {message}")
+
+logger.info("- **** Deleting local data from local **")
+delete_local_file(local_directory)
+logger.info("- **** Deleting transactions data from local **")
+delete_local_file(config.transactions_team_data_mart_local_file)
+delete_local_file(config.transactions_team_data_mart_partitioned_local_file)
+logger.info("s** Deleted transactions data from local*")
+
+
+logger.info("**** Deleting customers data from local ************" )
+delete_local_file(config.customer_data_mart_local_file)
+logger.info("s** Deleted customers data from local*")
+
+logger.info("**** Deleting error data from local ************" )
+delete_local_file(config.error_folder_path_local)
+logger.info("s** Deleted error data from local*")
+
+
+#update the status of staging table update_statements = []
+update_statements =[]
+if correct_files:
+                for file in correct_files:
+                    filename = os.path.basename(file)
+                    statements = f"UPDATE {db_name}.{config.item_staging_table}"\
+                          f" SET status = 'I',updated_date='{formatted_date}' "\
+                          f"WHERE file_name = '{filename}'"
+                    update_statements.append(statements)
+                
+                logger.info("Updated statement created for staging table --- {update_statements}") 
+                logger.info("*** *****Connecting with My SQL server **")
+                connection = get_mysql_connection()
+                cursor = connection.cursor()
+                logger.info("*****    My SQL server connected successfully ********")
+
+
+                for statement in update_statements:
+                    cursor.execute(statement)
+                    connection.commit()
+                cursor.close()
+                connection.close()
+else:
+    logger.error("* *****  There is some error in process in between****")
+    sys.exit()
+
+
+input("Press enter to terminate ")  #for spark
