@@ -1,0 +1,27 @@
+.
+├── directory-structure.txt
+├── local_project_directory_download_location
+│   ├── customer_data_mart
+│   ├── error_files
+│   ├── file_from_s3
+│   ├── transactions_partition_data
+│   └── transactions_team_data_mart
+├── mysql_local_db_tables.png
+├── new_readme.md
+├── node_modules
+│   └── 22
+├── package-lock.json
+├── package.json
+├── random_generated_data
+│   ├── sales_data.csv
+│   └── transactions_data.csv
+├── readme.md
+├── resources
+│   ├── dev
+│   └── sql_scripts
+├── spark jobs screenshot.png
+└── src
+    ├── main
+    └── test
+
+16 directories, 9 files

@@ -40,26 +40,26 @@ def dimesions_table_join(final_df_to_process,
 
 
 
-   #step 1 where i am adding customer table
+   # adding customer table
     # final_df_to_process.alias("s3_data") \
     #     .join(customer_table_df.alias("ct"),
     #           col("s3_data.customer_id") == col("ct.customer_id"),"inner") \
     #     .show()
 
-    #step 2 where i am adding store table details
+    # adding store table details
     # s3_customer_df_join.join(store_table_df,
     #                          store_table_df["id"]==s3_customer_df_join["store_id"],
     #                          "inner").show()
 
-    #But i do not need all the columns so dropping it
+    # need all the columns so dropping it
     #save the result into s3_customer_store_df_join
 
 
-       #step 3 where i am adding transactions team table details
+       #adding transactions team table details
     # s3_customer_store_df_join.join(transactions_team_table_df,
     #                          transactions_team_table_df["id"]==s3_customer_store_df_join["transactions_person_id"],
     #                          "inner").show()
 
 
-    #But i do not need all the columns so dropping it
+    # need all the columns so dropping it
     #save the result into s3_customer_store_transactions_df_join
