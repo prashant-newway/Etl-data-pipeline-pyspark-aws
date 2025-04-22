@@ -87,20 +87,25 @@ logging
 
 ```
 
-# Project Architecture
+# Project Architecture and Data flow 
 
 
 ```
 
-[Randome Sample Data Generator via python in a csv file ] -> [ data checks ]
+[Random Sample Data Generator via python in a csv file ] -> [Download from aws S3 bucket via boto3 client] -> [Local Directory after data validation ]
+
      ↓
-[Download from aws S3 bucket ]
-     ↓
-[Local Directory after data validation ]
+
      ↓
 [Encryption & Boto3 Upload to S3]
      ↓
-[Spark Processing]
+[data check with Spark and handling correct and error files ]
+     ↓
+[Staging table status update in mysql local database of this ETL process ]
+     ↓
+[Creating spark dataframe with handling of additional columns]
+     ↓
+[spark reading mysql local db via jdbc driver]
      ↓
 [MySQL DB] ↔ [Fact & Dim Tables Join]
      ↓
