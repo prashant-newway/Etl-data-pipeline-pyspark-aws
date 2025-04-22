@@ -481,7 +481,7 @@ if correct_files:
                           f"WHERE file_name = '{filename}'"
                     update_statements.append(statements)
                 
-                logger.info("Updated statement created for staging table --- {update_statements}") 
+                logger.info(f"Updated statement created for staging table --- {update_statements}") 
                 logger.info("*** *****Connecting with My SQL server **")
                 connection = get_mysql_connection()
                 cursor = connection.cursor()
