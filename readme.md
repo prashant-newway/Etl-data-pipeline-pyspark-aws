@@ -110,7 +110,7 @@ spark , partitioning , parquet (columnar data ) to effieciently transfer and sto
 
 # Database ER Diagram
 
-'''
+```
 Star Schema
 
 
@@ -145,7 +145,8 @@ Star Schema
 | manager    | | price      | | address      | | avg_txn_value    |
 +------------+ +------------+ +--------------+ +------------------+
 
-'''
+```
+
 #  Known Limitations and potential To Do 
 
 - orchestration either creating dags via airflow or aws eventbridge and lambda can be used 
