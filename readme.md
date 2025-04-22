@@ -8,6 +8,10 @@ Although developed locally for demonstration purposes, this codebase is structur
 
 spark , partitioning , parquet (columnar data ) to effieciently transfer and store 
 
+Data validation , checking , extra column , data error , 
+staging table to check for status and to monitor failure and dealing with it 
+logging
+
 
 # Tech Stack Used :
 - Apache Spark
@@ -88,15 +92,13 @@ spark , partitioning , parquet (columnar data ) to effieciently transfer and sto
 
 ```
 
-[Data Generator] 
+[Randome Sample Data Generator via python in a csv file ] -> [ data checks ]
      ↓
-[Local CSV Directory]
+[Download from aws S3 bucket ]
+     ↓
+[Local Directory after data validation ]
      ↓
 [Encryption & Boto3 Upload to S3]
-     ↓
-[S3 Bucket]
-     ↓
-[Download to Local (temp)]
      ↓
 [Spark Processing]
      ↓
@@ -146,8 +148,19 @@ Star Schema
 +------------+ +------------+ +--------------+ +------------------+
 
 ```
+# Data checks 
+- logging 
+- error handling
+- file path , file name , 
+- correct schema check and then process for both missing or extra column
+- extra column handling
+- wrong files handling 
+- missing columns check 
 
 #  Known Limitations and potential To Do 
 
 - orchestration either creating dags via airflow or aws eventbridge and lambda can be used 
 - more dynamic code
+- more file structure rather than just csv 
+- data encryption especially personal data 
+
