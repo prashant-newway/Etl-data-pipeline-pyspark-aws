@@ -6,6 +6,23 @@ It handles large volumes of data (~15GB/day), includes data encryption, logging,
 
 Although developed locally for demonstration purposes, this codebase is structured and production-ready. The project mimics daily professional tasks of a DE team, particularly managing transactional and customer sales data, transforming it, and loading it into data marts for further analytics.
 
+spark , partitioning , parquet (columnar data ) to effieciently transfer and store 
+
+
+# Tech Stack Used :
+- Apache Spark
+- Pyspark
+- AWS S3
+- SQL and dataframe operations
+
+# Key Features :
+- Implemented JDBC connections to external databases
+- Designed efficient ETL workflow with optimized job execution
+- Orchestrated multiple Spark jobs with FIFO scheduling
+- Complete monitoring through Spark UI
+- Successfully processed 81+ jobs with consistent performance
+- Specific Data marts build for different use cases.
+
 # Project Directory Tree
 
 ```
@@ -93,6 +110,9 @@ Although developed locally for demonstration purposes, this codebase is structur
 
 # Database ER Diagram
 
+'''
+Star Schema
+
 
           +-------------------+
           |   Customer_Dim    |
@@ -125,5 +145,8 @@ Although developed locally for demonstration purposes, this codebase is structur
 | manager    | | price      | | address      | | avg_txn_value    |
 +------------+ +------------+ +--------------+ +------------------+
 
+'''
+#  Known Limitations and potential To Do 
 
-#  Known Limitations
+- orchestration either creating dags via airflow or aws eventbridge and lambda can be used 
+- more dynamic code
