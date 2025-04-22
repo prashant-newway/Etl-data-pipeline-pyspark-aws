@@ -8,64 +8,68 @@ Although developed locally for demonstration purposes, this codebase is structur
 
 # Project Directory Tree
 
+```
 .
 ├── directory_tree.txt
 ├── local_project_directory_download_location
-│   ├── customer_data_mart
-│   ├── error_files
-│   ├── file_from_s3
-│   ├── transactions_partition_data
-│   └── transactions_team_data_mart
+│   ├── customer_data_mart
+│   ├── error_files
+│   ├── file_from_s3
+│   ├── transactions_partition_data
+│   └── transactions_team_data_mart
 ├── mysql_local_db_tables.png
 ├── random_generated_data
-│   ├── sales_data.csv
-│   └── transactions_data.csv
+│   ├── sales_data.csv
+│   └── transactions_data.csv
 ├── readme.md
 ├── resources
-│   ├── dev
-│   │   ├── config.py
-│   │   └── requirements.txt
-│   └── sql_scripts
-│       └── table_scripts.sql
+│   ├── dev
+│   │   ├── config.py
+│   │   └── requirements.txt
+│   └── sql_scripts
+│       └── table_scripts.sql
 ├── spark jobs screenshot.png
 └── src
     ├── main
-    │   ├── delete
-    │   │   ├── aws_delete.py
-    │   │   ├── database_delete.py
-    │   │   └── local_file_delete.py
-    │   ├── download
-    │   │   └── download_from_s3.py
-    │   ├── move
-    │   │   └── move_files.py
-    │   ├── read
-    │   │   ├── database_read.py
-    │   │   └── read_from_s3.py
-    │   ├── transformations
-    │   │   └── jobs
-    │   │       ├── customer_mart_sql_tranform_write.py 
-    │   │       ├── dimension_tables_join.py
-    │   │       ├── main.py
-    │   │       └── transactions_mart_sql_transform_write.py
-    │   ├── upload
-    │   │   └── upload_to_s3.py
-    │   ├── utility
-    │   │   ├── encrypt_decrypt.py
-    │   │   ├── logging_config.py
-    │   │   ├── mysql_session.py
-    │   │   ├── s3_client_object.py
-    │   │   └── spark_session.py
-    │   └── write
-    │       ├── database_write.py
-    │       └── dataframe_writer.py
+    │   ├── delete
+    │   │   ├── aws_delete.py
+    │   │   ├── database_delete.py
+    │   │   └── local_file_delete.py
+    │   ├── download
+    │   │   └── download_from_s3.py
+    │   ├── move
+    │   │   └── move_files.py
+    │   ├── read
+    │   │   ├── database_read.py
+    │   │   └── read_from_s3.py
+    │   ├── transformations
+    │   │   └── jobs
+    │   │       ├── customer_mart_sql_tranform_write.py
+    │   │       ├── dimension_tables_join.py
+    │   │       ├── main.py
+    │   │       └── transactions_mart_sql_transform_write.py
+    │   ├── upload
+    │   │   └── upload_to_s3.py
+    │   ├── utility
+    │   │   ├── encrypt_decrypt.py
+    │   │   ├── logging_config.py
+    │   │   ├── mysql_session.py
+    │   │   ├── s3_client_object.py
+    │   │   └── spark_session.py
+    │   └── write
+    │       ├── database_write.py
+    │       └── dataframe_writer.py
     └── test
         ├── generate_csv_data.py
         ├── generate_customer_table_data.py
         └── transactions_data_upload_s3.py
 
-23 directories, 31 files
+```
 
 # Project Architecture
+
+
+```
 
 [Data Generator] 
      ↓
@@ -85,6 +89,7 @@ Although developed locally for demonstration purposes, this codebase is structur
      ↓
 [S3 (Final Data Mart Upload)]
 
+```
 
 # Database ER Diagram
 
