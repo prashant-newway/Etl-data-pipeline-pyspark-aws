@@ -178,7 +178,7 @@ Star Schema
 +------------+ +------------+ +--------------+ +--------------------+
 
 ```
-```
+
 # Star Schema Database Design
 
 This repository contains a star schema database design with one fact table and four dimension tables for a retail transaction system.
