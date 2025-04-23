@@ -8,7 +8,6 @@
 │   └── transactions_team_data_mart
 ├── mysql_local_db_tables.png
 ├── random_generated_data
-│   ├── sales_data.csv
 │   └── transactions_data.csv
 ├── readme.md
 ├── resources
@@ -53,4 +52,4 @@
         ├── generate_customer_table_data.py
         └── transactions_data_upload_s3.py
 
-23 directories, 31 files
+23 directories, 30 files

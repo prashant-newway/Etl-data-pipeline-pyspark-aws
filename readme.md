@@ -13,6 +13,8 @@ staging table to check for status and to monitor failure and dealing with it
 logging
 
 
+# Table of Contents
+# Business Context 
 # Tech Stack Used :
 - Apache Spark
 - Pyspark
@@ -38,57 +40,58 @@ logging
 .
 ├── directory_tree.txt
 ├── local_project_directory_download_location
-│   ├── customer_data_mart
-│   ├── error_files
-│   ├── file_from_s3
-│   ├── transactions_partition_data
-│   └── transactions_team_data_mart
+│   ├── customer_data_mart
+│   ├── error_files
+│   ├── file_from_s3
+│   ├── transactions_partition_data
+│   └── transactions_team_data_mart
 ├── mysql_local_db_tables.png
 ├── random_generated_data
-│   ├── sales_data.csv
-│   └── transactions_data.csv
+│   └── transactions_data.csv
 ├── readme.md
 ├── resources
-│   ├── dev
-│   │   ├── config.py
-│   │   └── requirements.txt
-│   └── sql_scripts
-│       └── table_scripts.sql
+│   ├── dev
+│   │   ├── config.py
+│   │   └── requirements.txt
+│   └── sql_scripts
+│       └── table_scripts.sql
 ├── spark jobs screenshot.png
 └── src
     ├── main
-    │   ├── delete
-    │   │   ├── aws_delete.py
-    │   │   ├── database_delete.py
-    │   │   └── local_file_delete.py
-    │   ├── download
-    │   │   └── download_from_s3.py
-    │   ├── move
-    │   │   └── move_files.py
-    │   ├── read
-    │   │   ├── database_read.py
-    │   │   └── read_from_s3.py
-    │   ├── transformations
-    │   │   └── jobs
-    │   │       ├── customer_mart_sql_tranform_write.py
-    │   │       ├── dimension_tables_join.py
-    │   │       ├── main.py
-    │   │       └── transactions_mart_sql_transform_write.py
-    │   ├── upload
-    │   │   └── upload_to_s3.py
-    │   ├── utility
-    │   │   ├── encrypt_decrypt.py
-    │   │   ├── logging_config.py
-    │   │   ├── mysql_session.py
-    │   │   ├── s3_client_object.py
-    │   │   └── spark_session.py
-    │   └── write
-    │       ├── database_write.py
-    │       └── dataframe_writer.py
+    │   ├── delete
+    │   │   ├── aws_delete.py
+    │   │   ├── database_delete.py
+    │   │   └── local_file_delete.py
+    │   ├── download
+    │   │   └── download_from_s3.py
+    │   ├── move
+    │   │   └── move_files.py
+    │   ├── read
+    │   │   ├── database_read.py
+    │   │   └── read_from_s3.py
+    │   ├── transformations
+    │   │   └── jobs
+    │   │       ├── customer_mart_sql_tranform_write.py
+    │   │       ├── dimension_tables_join.py
+    │   │       ├── main.py
+    │   │       └── transactions_mart_sql_transform_write.py
+    │   ├── upload
+    │   │   └── upload_to_s3.py
+    │   ├── utility
+    │   │   ├── encrypt_decrypt.py
+    │   │   ├── logging_config.py
+    │   │   ├── mysql_session.py
+    │   │   ├── s3_client_object.py
+    │   │   └── spark_session.py
+    │   └── write
+    │       ├── database_write.py
+    │       └── dataframe_writer.py
     └── test
         ├── generate_csv_data.py
         ├── generate_customer_table_data.py
         └── transactions_data_upload_s3.py
+
+23 directories, 30 files
 
 ```
 # Spark Job Final Image
@@ -178,10 +181,7 @@ Star Schema
 +------------+ +------------+ +--------------+ +--------------------+
 
 ```
-
 # Star Schema Database Design
-
-This repository contains a star schema database design with one fact table and four dimension tables for a retail transaction system.
 
 ## Database Schema
 
@@ -239,10 +239,10 @@ erDiagram
         date joining_date
     }
     
-    fct_transactions ||--o{ dim_customer : "customer_id"
-    fct_transactions ||--o{ dim_store : "store_id"
-    fct_transactions ||--o{ dim_item : "item_id"
-    fct_transactions ||--o{ dim_transactions_team : "transactions_person_id"
+    dim_customer ||--o{ fct_transactions : "customer_id"
+    dim_store ||--o{ fct_transactions : "store_id" 
+    dim_item ||--o{ fct_transactions : "item_id"
+    dim_transactions_team ||--o{ fct_transactions : "transactions_person_id"
 ```
 
 # Local mysql db table description of staging tables and data marts:
