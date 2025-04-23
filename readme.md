@@ -91,13 +91,16 @@ logging
         └── transactions_data_upload_s3.py
 
 ```
+# Spark Job Final Image
+![Alt text](https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/spark%20jobs%20screenshot.png?raw=true)
+
 
 # Project Architecture and Data flow 
 
 
 ```
 
-[Transaction data is generated at point-of-sale systems ( used random Sample Data Generator here) ] 
+[Transaction data is generated at point-of-sale systems ( used random Sample Data here) ] 
                   ↓
 [Download from aws S3 bucket via boto3 client] 
                   ↓
