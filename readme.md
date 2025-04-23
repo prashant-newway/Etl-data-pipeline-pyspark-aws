@@ -133,6 +133,11 @@ logging
 ```
 
 # Database ER Diagram
+1 fact table and 4 dimension table 
+The fact table will have Customer transactional actual data and will be accessing this data daily/monthly from aws s3
+Dimension table gives context and info about customer , store , item , transaction_person
+
+
 
 ```
 Star Schema
@@ -173,6 +178,75 @@ Star Schema
 +------------+ +------------+ +--------------+ +--------------------+
 
 ```
+```
+# Star Schema Database Design
+
+This repository contains a star schema database design with one fact table and four dimension tables for a retail transaction system.
+
+## Database Schema
+
+```mermaid
+erDiagram
+    fct_transactions {
+        int transaction_id PK
+        int customer_id FK
+        int store_id FK
+        int item_id FK
+        int transactions_person_id FK
+        date transactions_date
+        decimal price
+        int quantity
+        decimal total_cost
+    }
+    
+    dim_customer {
+        int customer_id PK
+        varchar first_name
+        varchar last_name
+        varchar address
+        varchar pincode
+        varchar phone_number
+        date customer_joining_date
+    }
+    
+    dim_store {
+        int id PK
+        varchar address
+        varchar store_pincode
+        varchar store_manager_name
+        date store_opening_date
+        text reviews
+    }
+    
+    dim_item {
+        int id PK
+        varchar name
+        decimal current_price
+        decimal old_price
+        timestamp created_date
+        timestamp updated_date
+        date expiry_date
+    }
+    
+    dim_transactions_team {
+        int id PK
+        varchar first_name
+        varchar last_name
+        int manager_id
+        char is_manager
+        varchar address
+        varchar pincode
+        date joining_date
+    }
+    
+    fct_transactions ||--o{ dim_customer : "customer_id"
+    fct_transactions ||--o{ dim_store : "store_id"
+    fct_transactions ||--o{ dim_item : "item_id"
+    fct_transactions ||--o{ dim_transactions_team : "transactions_person_id"
+```
+
+# Local mysql db table description of staging tables and data marts:
+https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql_local_db_tables.png?raw=true
 # Data checks 
 - logging 
 - error handling
