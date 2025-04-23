@@ -20,12 +20,17 @@ logging
 - SQL and dataframe operations
 
 # Key Features :
+- A fully end to end ETL data pipeline which closely mimics  to a production environment consisting of aws s3 , pyspark and local mysql database with relatively small dataset 
+- usage of spark including connection to mysql db , dataframe creation , schema check , data handling for missing or additional data , partition and joining 
+- use of aws s3 
 - Implemented JDBC connections to external databases
 - Designed efficient ETL workflow with optimized job execution
 - Orchestrated multiple Spark jobs with FIFO scheduling
 - Complete monitoring through Spark UI
 - Successfully processed 81+ jobs with consistent performance
 - Specific Data marts build for different use cases.
+- Encryption of access keys and other important info.
+
 
 # Project Directory Tree
 
@@ -92,25 +97,34 @@ logging
 
 ```
 
-[Random Sample Data Generator via python in a csv file ] -> [Download from aws S3 bucket via boto3 client] -> [Local Directory after data validation ]
-
-     ↓
-
-     ↓
-[Encryption & Boto3 Upload to S3]
-     ↓
+[Transaction data is generated at point-of-sale systems ( used random Sample Data Generator here) ] 
+                  ↓
+[Download from aws S3 bucket via boto3 client] 
+                  ↓
+[to Local Directory after data validation ]
+                  ↓
+[creation of spark session with connecting to mysql local db ]
+                  ↓
 [data check with Spark and handling correct and error files ]
-     ↓
+                  ↓
 [Staging table status update in mysql local database of this ETL process ]
-     ↓
+                  ↓
 [Creating spark dataframe with handling of additional columns]
-     ↓
-[spark reading mysql local db via jdbc driver]
-     ↓
+                  ↓
+[loading dimension table from mysql local db via spark jdbc driver and creating dataframes ]
+                  ↓
 [MySQL DB] ↔ [Fact & Dim Tables Join]
-     ↓
-[Data Marts in Parquet Format (Partitioned by Month & Store ID)]
-     ↓
+                  ↓
+[Selecting colunms for datamarts and Ingesting parquet files into local and S3]
+                  ↓
+[Selecting colunms for datamarts and Ingesting parquet files into local and S3]
+                  ↓                 
+[Writing Transaction data in partition via pyspark and loading into local and S3 in Parquet Format (Partitioned by Month & Store details better optimizing in further read/scan for downstream analytics)]
+                  ↓
+[Deleting local files as not needed after uploading on s3 ]
+                  ↓
+[Update status in staging tables in local my sql db for all the files]
+                  ↓
 [S3 (Final Data Mart Upload)]
 
 ```
@@ -126,6 +140,8 @@ Star Schema
           +-------------------+
           | customer_id (PK)  |
           | name              |
+          | address           |
+          | phone_number      |
           | join_date         |
           +-------------------+
                     |
@@ -134,23 +150,24 @@ Star Schema
           +-------------------+
           |    Fact_Table     |
           +-------------------+
-          | transaction_id    |
           | customer_id (FK)  |
           | store_id (FK)     |
           | product_id (FK)   |
-          | billing_id (FK)   |
+          | billing_id (FK) 
+         |
           | sales_date        |
-          | price, cost       |
+          | price             |
           +-------------------+
          /     |        |        \
         v      v        v         v
-+------------+ +------------+ +--------------+ +------------------+
-| Store_Dim  | | Product_Dim| | Billing_Dim  | | Customer_Mart    |
-+------------+ +------------+ +--------------+ +------------------+
-| store_id   | | product_id | | billing_id   | | customer_id      |
-| address    | | name, info | | name, mgr    | | total_monthly_spend |
-| manager    | | price      | | address      | | avg_txn_value    |
-+------------+ +------------+ +--------------+ +------------------+
++------------+ +------------+ +--------------+ +--------------------+
+| Store_Dim  | | item_Dim   | | Billing_Dim  | |transactionsteam_Dim|
++------------+ +------------+ +--------------+ +--------------------+
+| store_id   | | item_id    | | billing_id   | | transaction_team_id|
+| address    | | name, info | |   item       | | total_monthly_spend |
+| reviews    | |currentprice| |  customer_id | |
+| manager    | | oldprice   | |   mgr        | | address    |
++------------+ +------------+ +--------------+ +--------------------+
 
 ```
 # Data checks 
@@ -168,4 +185,4 @@ Star Schema
 - more dynamic code
 - more file structure rather than just csv 
 - data encryption especially personal data 
-
+- deletion of files after a certain period to have a backup incase of failure while uploading on s3
