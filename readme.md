@@ -1,4 +1,4 @@
-# Overview
+# ETL data pipeline with Aws S3 , Pyspark and mysql
 
 This project implements a comprehensive ETL (Extract, Transform, Load) data pipeline that simulates a production-grade data processing workflow using AWS S3, PySpark, and MySQL, and loads optimized data marts into both local storage and S3 for downstream analytics. The pipeline is designed to efficiently handle large datasets, perform complex data transformations using Spark features such as joins and partitioning, and manage data storage across both cloud and relational database environments. It includes capabilities for schema validation, data quality checks, error handling, encryption, logging, and the use of dynamic libraries.
 
