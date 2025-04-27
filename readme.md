@@ -1,4 +1,4 @@
-# Overview
+## Overview
 
 This project implements a comprehensive ETL (Extract, Transform, Load) data pipeline that simulates a production-grade data processing workflow using AWS S3, PySpark, and MySQL, and loads optimized data marts into both local storage and S3 for downstream analytics. The pipeline is designed to efficiently handle large datasets, perform complex data transformations using Spark features such as joins and partitioning, and manage data storage across both cloud and relational database environments. It includes capabilities for schema validation, data quality checks, error handling, encryption, logging, and the use of dynamic libraries.
 
@@ -19,7 +19,7 @@ It uses data modeling concepts to create a test dataset that follows a star sche
 - **Error Handling & Logging:** Developed robust error handling, including exception management, error file management, and detailed logging for better traceability.
 - **Production Readiness:** Designed with production-ready features, including dynamic libraries, detailed logging, and process monitoring via staging tables, ensuring stability and maintainability.
 
-# Business Context
+## Business Context
 The primary business goal is to:
 - Track customer spending behavior and generate insights
 - Identify and incentivize top-performing sales personnel
@@ -30,7 +30,7 @@ The primary business goal is to:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ Transaction sales data is available in S3 (used Test Data)    │
+│Transaction sales data is available in S3(used Test Data)│
 └───────────────────────────┬─────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────┐
@@ -100,13 +100,13 @@ The primary business goal is to:
 │ Checking Spark UI for the jobs on localhost             │
 └─────────────────────────────────────────────────────────┘
 ```
-# Spark Job Final Image
+## Spark Job Image
 ![Alt text](https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/spark%20jobs%20screenshot.png?raw=true)
 
 
 
 
-## Star Schema Database ER Diagram
+# Star Schema Database ER Diagram
 A star schema with one fact table and four dimension tables:
 
 - Fact Table: Stores transactional data accessed daily/monthly from AWS S3.
@@ -164,9 +164,8 @@ A star schema with one fact table and four dimension tables:
 
 
 
-# Local mysql db table description of staging tables and data marts:
-https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql_local_db_tables.png?raw=true
-
+### Local mysql db table description of staging tables and data marts:
+![Alt text](https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql_local_db_tables.png?raw=true)
 
 
 # Project Directory Tree
@@ -235,7 +234,7 @@ https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql
 
 - **Staging Table:** For auditing and process tracking
 - **Customer Data Mart:** Aggregated customer spending patterns with dynamically generated promotion codes
-- **Sales Team Data Mart:** Performance metrics with incentive calculations for top performers
+- **Transcations Sales Team Data Mart:** Performance metrics with incentive calculations for top performers
 
 
 ## Known Limitations and Future Enhancements possible :
@@ -253,9 +252,11 @@ https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql
 ### Prerequisites
 
 - Python 
-- OpenJDK 11
+- AWS boto3
+- OpenJDK 11 , Java , JDBC driver
 - MySQL Server 
 - Apache Spark
+
 ### Database Setup
 
 1. Create MySQL database: `CREATE DATABASE mysql_aws_pyspark_db;`
