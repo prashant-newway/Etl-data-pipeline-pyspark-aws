@@ -1,37 +1,172 @@
 # Overview
 
-This is a ETL Data Pipeline that downloads user transaction and profile data from aws s3 -> to local my sql database server -> 
+This project implements a comprehensive ETL (Extract, Transform, Load) data pipeline that simulates a production-grade data processing workflow using AWS S3, PySpark, and MySQL, and loads optimized data marts into both local storage and S3 for downstream analytics. The pipeline is designed to efficiently handle large datasets, perform complex data transformations using Spark features such as joins and partitioning, and manage data storage across both cloud and relational database environments. It includes capabilities for schema validation, data quality checks, error handling, encryption, logging, and the use of dynamic libraries.
 
-It handles large volumes of data (~15GB/day), includes data encryption, logging, schema validation, AWS S3 integration using Boto3, and is designed with Spark fundamentals for transformation.
-
-Although developed locally for demonstration purposes, this codebase is structured and production-ready. The project mimics daily professional tasks of a DE team, particularly managing transactional and customer sales data, transforming it, and loading it into data marts for further analytics.
-
-spark , partitioning , parquet (columnar data ) to effieciently transfer and store 
-
-Data validation , checking , extra column , data error , 
-staging table to check for status and to monitor failure and dealing with it 
-logging
+It uses data modeling concepts to create a test dataset that follows a star schema, with one fact table containing customer transactional data stored in AWS S3, and four dimension tables (customer, item, employee, store) stored in a local MySQL database. Additionally, a staging table is used to monitor the status of the process.
 
 
-# Table of Contents
-# Business Context 
-# Tech Stack Used :
-- Apache Spark
-- Pyspark
-- AWS S3
-- SQL and dataframe operations
 
-# Key Features :
-- A fully end to end ETL data pipeline which closely mimics  to a production environment consisting of aws s3 , pyspark and local mysql database with relatively small dataset 
-- usage of spark including connection to mysql db , dataframe creation , schema check , data handling for missing or additional data , partition and joining 
-- use of aws s3 
-- Implemented JDBC connections to external databases
-- Designed efficient ETL workflow with optimized job execution
-- Orchestrated multiple Spark jobs with FIFO scheduling
-- Complete monitoring through Spark UI
-- Successfully processed 81+ jobs with consistent performance
-- Specific Data marts build for different use cases.
-- Encryption of access keys and other important info.
+## Technical Skills & Features Demonstrated
+
+- **Full ETL Architecture:** Designed a complete ETL pipeline that extracts customer transaction data from AWS S3, transforms it using PySpark, and loads it into a MySQL database for further analysis.
+- **Big Data Processing:** Utilized Apache Spark (DataFrames, joins, partitioning) to process high-volume, daily transactional data, improving performance for downstream users.
+- **Data Modeling:** Implemented a star schema design with one fact table (customer transactions) and four dimension tables (customer, item, employee, store) to optimize data structure for analytics.
+- **Advanced Processing & Performance Optimization:** Leveraged Spark’s capabilities, including partitioning, columnar data formats (Parquet), and optimized storage with partitioned Parquet files (by month and store location) to ensure efficient querying.
+- **Cloud Integration & Storage Optimization:** Seamlessly integrated with AWS S3 using the `boto3` SDK for data ingestion and storage, ensuring efficient, scalable data pipelines.
+- **Security & Credential Management:** Applied data encryption, secure access key handling, and best practices for credential management to maintain data integrity and privacy.
+- **Database Integration & Monitoring:** Integrated MySQL using JDBC connectors, tracked pipeline status through staging tables, and monitored processes via the Spark UI.
+- **Data Quality & Validation:** Incorporated schema validation, data quality checks, and handled anomalies such as missing or extra data fields to ensure clean and accurate datasets.
+- **Error Handling & Logging:** Developed robust error handling, including exception management, error file management, and detailed logging for better traceability.
+- **Production Readiness:** Designed with production-ready features, including dynamic libraries, detailed logging, and process monitoring via staging tables, ensuring stability and maintainability.
+
+# Business Context
+The primary business goal is to:
+- Track customer spending behavior and generate insights
+- Identify and incentivize top-performing sales personnel
+- Enable daily/monthly reporting on sales performance
+- Create a foundation for targeted customer promotions based on spending patterns
+
+# ETL Data Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Transaction sales data is available in S3 (used Test Data)    │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Status check of last ran process (success/failure)      │
+│ in the staging table data in local MySQL DB             │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Download data from AWS S3 bucket                        │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Store in Local Directory after data validation          │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Creation of Spark session and checking of schema        │
+│ of S3 transaction files                                 │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Handling correct and error files                        │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Staging table status update in MySQL local database     │
+│ of this ETL process                                     │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Creating Spark DataFrame with handling of               │
+│ additional columns, if any                              │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Loading dimension table from MySQL local DB             │
+│ and creating Spark DataFrames                           │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Joining all Spark DataFrames from dimension table       │
+│ from local MySQL DB and transaction table from S3       │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Selecting columns for different datamarts creation      │
+│ and ingesting parquet files into local and S3           │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Writing enriched data with created metrics via PySpark  │
+│ and loading into local and S3 in Parquet Format         │
+│ (Partitioned by Month & Store for optimized scanning by │
+│     downstream analytics team )                         │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Deleting local files                                    │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Update status in staging tables of success in MySQL DB  │
+│ for all the files                                       │
+└───────────────────────────┬─────────────────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│ Checking Spark UI for the jobs on localhost             │
+└─────────────────────────────────────────────────────────┘
+```
+# Spark Job Final Image
+![Alt text](https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/spark%20jobs%20screenshot.png?raw=true)
+
+
+
+
+## Star Schema Database ER Diagram
+A star schema with one fact table and four dimension tables:
+
+- Fact Table: Stores transactional data accessed daily/monthly from AWS S3.
+- Dimension Tables: Stores Customer, Item, Employee, and Store details in local MySQL database
+- Staging Table: Tracks job status and error logs during data pipeline execution.
+
+```
+
+┌───────────────────────┐       ┌─────────────────────┐
+│ dim_customer          │       │ dim_store           │
+├───────────────────────┤       ├─────────────────────┤
+│ customer_id (PK)      │       │ id (PK)             │
+│ first_name            │       │ address             │
+│ last_name             │       │ store_pincode       │
+│ address               │       │ store_manager_name  │
+│ pincode               │       │ store_opening_date  │
+│ phone_number          │       │ reviews             │
+│ customer_joining_date │       │                     │
+└────────┬──────────────┘       └────────┬────────────┘
+         │                               │
+         │                               │
+         │                               │
+         │        ┌───────────────────────────────────┐
+         │        │                                   │
+         │        │      fct_transactions             │
+         └────────┤                                   ├───────────┐
+                  │ transaction_id (PK)               │           │
+                  │ customer_id (FK)                  │           │
+                  │ store_id (FK)                     │           │
+                  │ item_id (FK)                      │           │
+                  │ transactions_person_id (FK)       │           │
+                  │ transactions_date                 │           │
+                  │ price                             │           │
+                  │ quantity                          │           │
+                  │ total_cost                        │           │
+                  └───────────────────────────────────┘           │
+                           ▲                                      │
+                           │                                      │
+         ┌─────────────────┘                                      │
+         │                                                        │
+┌────────┴──────────┐                            ┌────────────────┴───────────┐
+│ dim_item          │                            │ dim_transactions_person     │
+├───────────────────┤                            ├────────────────────────────┤
+│ id (PK)           │                            │ id (PK)                    │
+│ name              │                            │ first_name                 │
+│ current_price     │                            │ last_name                  │
+│ old_price         │                            │ manager_id                 │
+│ created_date      │                            │ is_manager                 │
+│ updated_date      │                            │ address                    │
+│ expiry_date       │                            │ pincode                    │
+│                   │                            │ joining_date               │
+└───────────────────┘                            └────────────────────────────┘
+```
+
+
+
+
+# Local mysql db table description of staging tables and data marts:
+https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql_local_db_tables.png?raw=true
+
 
 
 # Project Directory Tree
@@ -93,173 +228,51 @@ logging
 
 23 directories, 30 files
 
-```
-# Spark Job Final Image
-![Alt text](https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/spark%20jobs%20screenshot.png?raw=true)
-
-
-# Project Architecture and Data flow 
-
 
 ```
 
-[Transaction data is generated at point-of-sale systems ( used random Sample Data here) ] 
-                  ↓
-[Download from aws S3 bucket via boto3 client] 
-                  ↓
-[to Local Directory after data validation ]
-                  ↓
-[creation of spark session with connecting to mysql local db ]
-                  ↓
-[data check with Spark and handling correct and error files ]
-                  ↓
-[Staging table status update in mysql local database of this ETL process ]
-                  ↓
-[Creating spark dataframe with handling of additional columns]
-                  ↓
-[loading dimension table from mysql local db via spark jdbc driver and creating dataframes ]
-                  ↓
-[MySQL DB] ↔ [Fact & Dim Tables Join]
-                  ↓
-[Selecting colunms for datamarts and Ingesting parquet files into local and S3]
-                  ↓
-[Selecting colunms for datamarts and Ingesting parquet files into local and S3]
-                  ↓                 
-[Writing Transaction data in partition via pyspark and loading into local and S3 in Parquet Format (Partitioned by Month & Store details better optimizing in further read/scan for downstream analytics)]
-                  ↓
-[Deleting local files as not needed after uploading on s3 ]
-                  ↓
-[Update status in staging tables in local my sql db for all the files]
-                  ↓
-[S3 (Final Data Mart Upload)]
+### Additional Tables
 
-```
+- **Staging Table:** For auditing and process tracking
+- **Customer Data Mart:** Aggregated customer spending patterns with dynamically generated promotion codes
+- **Sales Team Data Mart:** Performance metrics with incentive calculations for top performers
 
-# Database ER Diagram
-1 fact table and 4 dimension table 
-The fact table will have Customer transactional actual data and will be accessing this data daily/monthly from aws s3
-Dimension table gives context and info about customer , store , item , transaction_person
+
+## Known Limitations and Future Enhancements possible :
+
+- Workflow Orchestration: Integrate Apache Airflow or AWS-native services for robust scheduling and orchestration of data pipelines.
+- Cloud-Native Processing: Eliminate dependency on local environments by enabling direct data processing from AWS S3 with PySpark and MySQL, instead of downloading and processing files locally.
+- CI/CD and Automation: Implement CI/CD pipelines for automated testing, deployment, and routine backups, including cleanup of outdated files — currently handled manually.
+- Scalability and Flexibility: Enhance support for dynamic bucket names, evolving schemas (e.g. missing or extra columns), and a wider variety of file formats.
+- Security and Compliance: Add encryption for personal user data and improve logging with structured JSON output.
 
 
 
-```
-Star Schema
+## Setup and Requirements
 
+### Prerequisites
 
-          +-------------------+
-          |   Customer_Dim    |
-          +-------------------+
-          | customer_id (PK)  |
-          | name              |
-          | address           |
-          | phone_number      |
-          | join_date         |
-          +-------------------+
-                    |
-                    |
-                    v
-          +-------------------+
-          |    Fact_Table     |
-          +-------------------+
-          | customer_id (FK)  |
-          | store_id (FK)     |
-          | product_id (FK)   |
-          | billing_id (FK) 
-         |
-          | sales_date        |
-          | price             |
-          +-------------------+
-         /     |        |        \
-        v      v        v         v
-+------------+ +------------+ +--------------+ +--------------------+
-| Store_Dim  | | item_Dim   | | Billing_Dim  | |transactionsteam_Dim|
-+------------+ +------------+ +--------------+ +--------------------+
-| store_id   | | item_id    | | billing_id   | | transaction_team_id|
-| address    | | name, info | |   item       | | total_monthly_spend |
-| reviews    | |currentprice| |  customer_id | |
-| manager    | | oldprice   | |   mgr        | | address    |
-+------------+ +------------+ +--------------+ +--------------------+
+- Python 
+- OpenJDK 11
+- MySQL Server 
+- Apache Spark
+### Database Setup
 
-```
-# Star Schema Database Design
+1. Create MySQL database: `CREATE DATABASE mysql_aws_pyspark_db;`
+2. Execute SQL scripts in `sql/table_schemas.sql` to create tables
 
-## Database Schema
+### Environment Setup
 
-```mermaid
-erDiagram
-    fct_transactions {
-        int transaction_id PK
-        int customer_id FK
-        int store_id FK
-        int item_id FK
-        int transactions_person_id FK
-        date transactions_date
-        decimal price
-        int quantity
-        decimal total_cost
-    }
-    
-    dim_customer {
-        int customer_id PK
-        varchar first_name
-        varchar last_name
-        varchar address
-        varchar pincode
-        varchar phone_number
-        date customer_joining_date
-    }
-    
-    dim_store {
-        int id PK
-        varchar address
-        varchar store_pincode
-        varchar store_manager_name
-        date store_opening_date
-        text reviews
-    }
-    
-    dim_item {
-        int id PK
-        varchar name
-        decimal current_price
-        decimal old_price
-        timestamp created_date
-        timestamp updated_date
-        date expiry_date
-    }
-    
-    dim_transactions_team {
-        int id PK
-        varchar first_name
-        varchar last_name
-        int manager_id
-        char is_manager
-        varchar address
-        varchar pincode
-        date joining_date
-    }
-    
-    dim_customer ||--o{ fct_transactions : "customer_id"
-    dim_store ||--o{ fct_transactions : "store_id" 
-    dim_item ||--o{ fct_transactions : "item_id"
-    dim_transactions_team ||--o{ fct_transactions : "transactions_person_id"
-```
+1. Create a virtual environment: `python -m venv venv`
+2. Activate the virtual environment:
+   - Windows: `venv\Scripts\activate`
+   - Unix/MacOS: `source venv/bin/activate`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Configure environment variables for MySQL connection
+5. Set up AWS IAM user with S3 access and obtain access keys
+6. Run encryption script to secure your AWS credentials
 
-# Local mysql db table description of staging tables and data marts:
-https://github.com/prashant-newway/Etl-data-pipeline-pyspark-aws/blob/main/mysql_local_db_tables.png?raw=true
-# Data checks 
-- logging 
-- error handling
-- file path , file name , 
-- correct schema check and then process for both missing or extra column
-- extra column handling
-- wrong files handling 
-- missing columns check 
+### Database Setup
 
-#  Known Limitations and potential To Do 
-
-- orchestration either creating dags via airflow or aws eventbridge and lambda can be used 
-- more dynamic code
-- more file structure rather than just csv 
-- data encryption especially personal data 
-- deletion of files after a certain period to have a backup incase of failure while uploading on s3
+1. Create MySQL database: `CREATE DATABASE mysql_aws_pyspark_db;`
+2. Execute SQL scripts in `sql/table_schemas.sql` to create tables

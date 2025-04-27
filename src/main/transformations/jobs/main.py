@@ -337,7 +337,7 @@ store_table_df = database_client.create_dataframe (spark, config.store_table)
 
 s3_customer_store_transactions_df_join = dimesions_table_join(final_df_to_process,
                                                         customer_table_df, 
-                                                        store_table_df,
+                                                        store_table_df, 
                                                         transactions_team_table_df)
 
 
